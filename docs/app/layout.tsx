@@ -11,10 +11,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(basePath + '/', siteUrl),
   title: {
-    template: '%s | Codexed',
-    default: 'Codexed',
+    template: '%s | Codexed for Codex CLI',
+    default: 'Codexed for Codex CLI',
   },
   description: 'Manage your Codex config.toml, AGENTS.md files, skills, MCP servers and plugins from the browser.',
+  applicationName: 'Codexed',
 };
 
 export default function Layout({ children }: LayoutProps<'/'>) {

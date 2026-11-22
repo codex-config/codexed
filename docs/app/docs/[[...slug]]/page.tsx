@@ -11,7 +11,9 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { getPageGithubUrl, getPageImageUrl, getPageMarkdownUrl } from '@/lib/shared';
+import { JsonLd } from '@/lib/json-ld';
+import { lastModified } from '@/lib/last-modified';
+import { absoluteUrl, basePath, getPageGithubUrl, getPageImageUrl, getPageMarkdownUrl } from '@/lib/shared';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -23,6 +25,31 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
+      <JsonLd
+        data={{
+          '@graph': [
+            {
+              '@type': 'TechArticle',
+              headline: page.data.title,
+              description: page.data.description,
+              url: absoluteUrl(page.url),
+              image: absoluteUrl(getPageImageUrl(page).url.slice(basePath.length)),
+              dateModified: lastModified(`content/docs/${page.path}`)?.toISOString(),
+              inLanguage: 'en',
+              about: { '@type': 'SoftwareApplication', name: 'Codexed', applicationCategory: 'DeveloperApplication' },
+            },
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Codexed docs', item: absoluteUrl('/docs') },
+                ...(page.url === '/docs'
+                  ? []
+                  : [{ '@type': 'ListItem', position: 2, name: page.data.title, item: absoluteUrl(page.url) }]),
+              ],
+            },
+          ],
+        }}
+      />
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
       <div className="flex flex-row gap-2 items-center border-b pb-6">
@@ -55,8 +82,11 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
     description: page.data.description,
     alternates: { canonical: page.url },
     openGraph: {
+      type: 'article',
       url: page.url,
-      images: getPageImageUrl(page).url,
+      siteName: 'Codexed',
+      images: { url: getPageImageUrl(page).url, width: 1200, height: 630 },
     },
+    twitter: { card: 'summary_large_image' },
   };
 }

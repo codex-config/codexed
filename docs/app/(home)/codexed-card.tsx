@@ -167,6 +167,8 @@ export function CodexedCard() {
                 alt="Codexed, with the global settings of Codex as a form: text fields, lists of choices and switches"
                 width={2400}
                 height={1520}
+                loading="lazy"
+                decoding="async"
                 className="block w-full"
               />
             </div>
