@@ -273,7 +273,7 @@ func (s *Server) filePath(r *http.Request) (string, codex.Kind, error) {
 	q := r.URL.Query()
 	kind := codex.Kind(q.Get("kind"))
 	if kind == codex.KindSkill {
-		path, err := s.paths.SkillFile(q.Get("dir"), q.Get("name"))
+		path, err := s.paths.SkillFile(q.Get("dir"), q.Get("name"), q.Get("path"))
 		return path, kind, err
 	}
 	path, err := s.paths.File(q.Get("dir"), kind)
@@ -396,6 +396,7 @@ func writeError(w http.ResponseWriter, err error) {
 		errors.Is(err, codex.ErrBadDir),
 		errors.Is(err, codex.ErrGlobalDir),
 		errors.Is(err, codex.ErrBadSkillName),
+		errors.Is(err, codex.ErrNotSkillFile),
 		errors.Is(err, codex.ErrUnknownKind):
 		status = http.StatusBadRequest
 	case errors.Is(err, fs.ErrNotExist):

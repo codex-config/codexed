@@ -41,3 +41,26 @@ func TestProjects(t *testing.T) {
 		t.Errorf("first project = %s, want the most recent session", projects[0].Path)
 	}
 }
+
+func TestSkillFile(t *testing.T) {
+	user, home, project := t.TempDir(), t.TempDir(), t.TempDir()
+	paths := Paths{Home: home, User: user}
+
+	created, err := paths.SkillFile(project, "review", "")
+	if err != nil || created != filepath.Join(project, ".agents", "skills", "review", "SKILL.md") {
+		t.Errorf("new project skill = %s, %v", created, err)
+	}
+	legacy := filepath.Join(home, "skills", "old", "SKILL.md")
+	if got, err := paths.SkillFile("", "", legacy); err != nil || got != legacy {
+		t.Errorf("legacy user skill = %s, %v", got, err)
+	}
+	for _, path := range []string{
+		filepath.Join(user, ".agents", "skills", "x", "notes.md"),
+		filepath.Join(user, "Documents", "x", "SKILL.md"),
+		filepath.Join(user, ".agents", "skills", "a", "b", "SKILL.md"),
+	} {
+		if _, err := paths.SkillFile("", "", path); err == nil {
+			t.Errorf("SkillFile accepted %s", path)
+		}
+	}
+}

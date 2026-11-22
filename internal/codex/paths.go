@@ -7,23 +7,26 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 )
 
 // Paths locates the files that Codex reads.
 type Paths struct {
 	// Home is CODEX_HOME, usually ~/.codex.
 	Home string
+	// User is the home folder, where ~/.agents/skills lives.
+	User string
 }
 
 func DefaultPaths() (Paths, error) {
-	if dir := os.Getenv("CODEX_HOME"); dir != "" {
-		return Paths{Home: dir}, nil
-	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return Paths{}, err
 	}
-	return Paths{Home: filepath.Join(home, ".codex")}, nil
+	if dir := os.Getenv("CODEX_HOME"); dir != "" {
+		return Paths{Home: dir, User: home}, nil
+	}
+	return Paths{Home: filepath.Join(home, ".codex"), User: home}, nil
 }
 
 type Kind string
@@ -66,22 +69,42 @@ func (p Paths) File(dir string, kind Kind) (string, error) {
 	return "", ErrUnknownKind
 }
 
-var skillName = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]*$`)
+var (
+	skillName       = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]*$`)
+	ErrNotSkillFile = errors.New("this file is not the SKILL.md of a skill in a skills folder")
+)
 
-// SkillFile returns the SKILL.md of a skill in the user or project skills folder.
-func (p Paths) SkillFile(dir, name string) (string, error) {
-	if !skillName.MatchString(name) {
-		return "", ErrBadSkillName
+// SkillRoots are the folders where Codex finds the skills of a scope. New skills go
+// into the first one. Codex still reads the older .codex/skills folders.
+func (p Paths) SkillRoots(dir string) ([]string, error) {
+	if dir == "" {
+		return []string{filepath.Join(p.User, ".agents", "skills"), filepath.Join(p.Home, "skills")}, nil
 	}
-	root := filepath.Join(p.Home, "skills")
-	if dir != "" {
-		project, err := p.ProjectDir(dir)
-		if err != nil {
-			return "", err
+	project, err := p.ProjectDir(dir)
+	if err != nil {
+		return nil, err
+	}
+	return []string{filepath.Join(project, ".agents", "skills"), filepath.Join(project, ".codex", "skills")}, nil
+}
+
+// SkillFile returns the SKILL.md of a skill. An existing skill is found by its path,
+// which must be in a skills folder of the scope. A new skill only has a name.
+func (p Paths) SkillFile(dir, name, path string) (string, error) {
+	roots, err := p.SkillRoots(dir)
+	if err != nil {
+		return "", err
+	}
+	if path == "" {
+		if !skillName.MatchString(name) {
+			return "", ErrBadSkillName
 		}
-		root = filepath.Join(project, ".codex", "skills")
+		return filepath.Join(roots[0], name, "SKILL.md"), nil
 	}
-	return filepath.Join(root, name, "SKILL.md"), nil
+	path = filepath.Clean(path)
+	if filepath.Base(path) == "SKILL.md" && slices.Contains(roots, filepath.Dir(filepath.Dir(path))) {
+		return path, nil
+	}
+	return "", ErrNotSkillFile
 }
 
 // ProjectDir rejects the folder whose .codex is the Codex home, usually the home
