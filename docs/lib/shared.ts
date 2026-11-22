@@ -7,6 +7,8 @@ export const siteUrl = 'https://codexconfig.com';
 
 // Set when the site is not at the root of its domain. On GitHub Pages it is the repository name, as in "/codexed".
 export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
+export const absoluteUrl = (path: string) => `${siteUrl}${basePath}${path}`;
 export const docsRoute = '/docs';
 export const docsImageRoute = '/og/docs';
 export const docsMarkdownRoute = '/llms.mdx';

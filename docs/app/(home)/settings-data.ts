@@ -96,6 +96,8 @@ function mergeInto(node: Node, part: unknown) {
   }
 }
 
+export const codexVersion = snapshot.version;
+
 const root = resolveSchema(snapshot.schema as Node);
 const properties = root.properties ?? {};
 
