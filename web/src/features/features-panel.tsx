@@ -68,7 +68,7 @@ export function FeaturesPanel({ dir }: { dir: string }) {
               <h2 className="text-xs font-bold tracking-wider text-dim uppercase">{title}</h2>
               <p className="text-sm text-muted-foreground">{description}</p>
             </div>
-            <div className="divide-y rounded-3xl bg-card px-5 shadow-panel">
+            <div className="divide-y divide-border/60 rounded-3xl bg-card px-5 shadow-panel">
               {list.map((feature) => (
                 <FeatureRow
                   key={feature.name}

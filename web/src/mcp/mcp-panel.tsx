@@ -274,7 +274,7 @@ function ServerForm({
           </label>
         )}
       </div>
-      <div className="divide-y rounded-3xl bg-card px-5 shadow-panel">
+      <div className="divide-y divide-border/60 rounded-3xl bg-card px-5 shadow-panel">
         <FormRow
           label="Name"
           hint={

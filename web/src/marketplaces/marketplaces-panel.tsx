@@ -66,7 +66,7 @@ export function MarketplacesPanel({ actions }: { actions: Element | null }) {
 
       <section className="flex flex-col gap-3">
         <h2 className="px-1 text-xs font-bold tracking-wider text-dim uppercase">Add a marketplace</h2>
-        <div className="divide-y rounded-3xl bg-card px-5 shadow-panel">
+        <div className="divide-y divide-border/60 rounded-3xl bg-card px-5 shadow-panel">
           <FormRow label="Source" hint="A GitHub repository as owner/repo, a git URL, or a folder on this computer.">
             <Input value={source} onChange={(event) => setSource(event.target.value)} placeholder="owner/repo" className="font-mono" />
           </FormRow>
@@ -101,7 +101,7 @@ export function MarketplacesPanel({ actions }: { actions: Element | null }) {
       ) : (
         <section className="flex flex-col gap-3">
           <h2 className="px-1 text-xs font-bold tracking-wider text-dim uppercase">Your marketplaces</h2>
-          <div className="divide-y rounded-3xl bg-card px-5 shadow-panel">
+          <div className="divide-y divide-border/60 rounded-3xl bg-card px-5 shadow-panel">
             {marketplaces.map((marketplace) => (
               <div key={marketplace.name} className="flex items-start gap-6 py-4">
                 <div className="min-w-0 flex-1">

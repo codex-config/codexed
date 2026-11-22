@@ -169,7 +169,7 @@ function Section({
         </div>
       )}
       {description && <p className="px-1 text-sm text-muted-foreground">{description}</p>}
-      {children && <div className="divide-y rounded-3xl bg-card px-5 shadow-panel">{children}</div>}
+      {children && <div className="divide-y divide-border/60 rounded-3xl bg-card px-5 shadow-panel">{children}</div>}
     </section>
   )
 }

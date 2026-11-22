@@ -486,7 +486,7 @@ function ObjectControl({
   const shown = visibleProperties(properties, object)
 
   return (
-    <div className="divide-y rounded-2xl border px-4">
+    <div className="divide-y divide-border/60 rounded-2xl border px-4">
       {shown.map(([key, schema]) => (
         <SettingRow
           key={key}

@@ -45,7 +45,7 @@ export function NewSkillForm({ dir, actions, onCreated, onCancel }: Props) {
     <div className="flex h-full min-h-0 flex-col gap-4">
       <h2 className="font-heading text-lg font-semibold">New skill</h2>
       <div className="min-h-0 flex-1 overflow-y-auto rounded-lg">
-        <div className="divide-y rounded-3xl bg-card px-5 shadow-panel">
+        <div className="divide-y divide-border/60 rounded-3xl bg-card px-5 shadow-panel">
           <FormRow label="Name" hint={nameError ? 'Use lowercase letters, numbers and hyphens.' : `You run it as $${name || 'name'}.`}>
             <Input
               value={name}

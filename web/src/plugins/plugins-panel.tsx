@@ -70,7 +70,7 @@ export function PluginsPanel() {
             <h2 className="px-1 text-xs font-bold tracking-wider text-dim uppercase">
               {marketplace.interface?.displayName || marketplace.name}
             </h2>
-            <div className="divide-y rounded-3xl bg-card px-5 shadow-panel">
+            <div className="divide-y divide-border/60 rounded-3xl bg-card px-5 shadow-panel">
               {list.map((plugin) => {
                 const busy = change.isPending && change.variables?.plugin.id === plugin.id
                 return (
