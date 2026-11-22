@@ -35,8 +35,8 @@ export function Hero({ count }: { count: number }) {
 
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 pt-16 pb-12 sm:pt-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)]">
         <div className="flex flex-col items-start">
-          <h1 className="text-[2.75rem] leading-[1.05] font-extrabold tracking-tight sm:text-6xl">
-            Every setting,
+          <h1 className="text-[2.3rem] leading-[1.05] font-extrabold tracking-tight sm:text-6xl lg:text-5xl xl:text-6xl">
+            Codex CLI config
             <span className="block bg-linear-to-r from-[#3b6ff0] to-[#1d3d9e] bg-clip-text pb-1 text-transparent dark:from-[#c2d6ff] dark:via-[#8cb4ff] dark:to-[#4a7bf5]">
               in plain English
             </span>
