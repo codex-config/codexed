@@ -1,0 +1,70 @@
+name: Release
+
+# Manual only. Run it from the Actions tab. It builds every platform and creates, or
+# refreshes, a draft release named after the version in the VERSION file, with the
+# assets and SHA256SUMS. Check the draft on the Releases page and publish it. GitHub
+# then creates the v<version> tag on this commit.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+
+jobs:
+  release:
+    # The macOS tray needs cgo, so the assets are built on a Mac. Windows and
+    # Linux cross-compile from there.
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Version
+        id: version
+        run: echo "tag=v$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_OUTPUT"
+
+      # Stops early if this version is already out, before the long build.
+      - name: Check that the version is new
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          draft=$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null || echo none)
+          if [ "$draft" = false ]; then
+            echo "::error::$TAG is already published. Raise the version in the VERSION file."
+            exit 1
+          fi
+
+      - run: go test ./internal/...
+
+      # Writes the assets and SHA256SUMS to bin/release.
+      - run: make release
+
+      # A version with a dash, such as 0.2.0-beta.1, makes a pre-release. The install
+      # scripts only get a pre-release when you ask for its version.
+      - name: Draft release ${{ steps.version.outputs.tag }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --target "$GITHUB_SHA"
+            gh release upload "$TAG" bin/release/* --clobber
+          else
+            prerelease=""
+            case "$TAG" in *-*) prerelease="--prerelease" ;; esac
+            gh release create "$TAG" bin/release/* --draft --target "$GITHUB_SHA" --title "$TAG" --generate-notes $prerelease
+          fi

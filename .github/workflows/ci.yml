@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**', '**.md', '.github/*.png', '.github/workflows/docs.yml']
+  pull_request:
+    paths-ignore: ['docs/**', '**.md', '.github/*.png', '.github/workflows/docs.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push to the same branch stops the old run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # Builds the web interface, then runs go vet and go test.
+      - run: make test
+
+      - name: Lint the web interface
+        run: npm run lint
+        working-directory: web
+
+      # The macOS build needs cgo, so only the release workflow builds it.
+      - name: Build for Windows and Linux
+        run: |
+          GOOS=windows GOARCH=amd64 go build -o /dev/null .
+          GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o /dev/null .
