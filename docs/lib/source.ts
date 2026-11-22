@@ -1,6 +1,6 @@
 import { llms, loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
-import { docsRoute } from './shared';
+import { absoluteUrl, docsMarkdownRoute, docsRoute } from './shared';
 import { defineDocs } from 'fumadocs-mdx/macro';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 
@@ -25,6 +25,8 @@ export const source = loader({
 });
 
 export const docsLlms = llms(source, {
+  // The static build writes the Markdown of each page under /llms.mdx.
+  renderUrl: (item) => absoluteUrl(item.url.endsWith('.md') ? docsMarkdownRoute + item.url : item.url),
   renderPage: async (page) => `# ${page.data.title} (${page.url})
 
 ${await page.data.getText('processed')}`,
