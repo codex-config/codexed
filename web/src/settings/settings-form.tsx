@@ -10,6 +10,7 @@ import { queries, type JSONSchema, type Model } from '@/lib/api'
 import { parseConfig, setPath, useUpdateConfig } from '@/lib/settings'
 import { SettingRow } from '@/settings/controls'
 import { isExperimental, isInternal } from '@/settings/fields'
+import { SuggestionsButton } from '@/settings/suggestions-sheet'
 
 // Other sections edit these, and Codex keeps notice for itself.
 const hidden = new Set(['mcp_servers', 'features', 'skills', 'plugins', 'marketplaces', 'projects', 'notice'])
@@ -82,13 +83,17 @@ export function SettingsForm({ dir, toolbar, onShowTOML }: Props) {
     <div className="flex flex-col gap-8 pb-8">
       {toolbar &&
         createPortal(
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search settings"
-            aria-label="Search settings"
-            className="max-w-sm"
-          />,
+          <>
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search settings"
+              aria-label="Search settings"
+              className="max-w-sm"
+            />
+            {/* Suggestions are for how Codex behaves everywhere, so only the global config has them. */}
+            {dir === '' && <SuggestionsButton config={config} schema={schema.data.schema} />}
+          </>,
           toolbar,
         )}
 
