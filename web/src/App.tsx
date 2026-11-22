@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { ChevronRight, Globe, X } from 'lucide-react'
+import { ChevronRight, Globe, TriangleAlert, X } from 'lucide-react'
 import { useState } from 'react'
 
 import { EmptyState } from '@/components/empty-state'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { SidebarInset, SidebarProvider, useSidebar } from '@/components/ui/sidebar'
 import { FileEditor } from '@/files/file-editor'
@@ -33,6 +34,7 @@ export default function App() {
         <Header dir={dir} tab={tab} actions={setActions} />
         {/* key resets editors and their drafts when the folder changes */}
         <main key={dir} className="flex min-h-0 flex-1 flex-col">
+          <MissingCodex />
           {/* Every section stays mounted, so that switching keeps unsaved edits. */}
           {sections.map((section) => (
             <div
@@ -52,6 +54,24 @@ export default function App() {
         </main>
       </SidebarInset>
     </SidebarProvider>
+  )
+}
+
+// Most sections ask Codex, so they need the Codex CLI. Codexed looks for it again every minute.
+function MissingCodex() {
+  const health = useQuery({ ...queries.health(), refetchInterval: (query) => (query.state.data?.codex ? false : 30_000) })
+  if (!health.data || health.data.codex) return null
+  return (
+    <Alert className="mx-5 mt-5 w-auto">
+      <TriangleAlert />
+      <AlertTitle>Codexed could not find the Codex CLI</AlertTitle>
+      <AlertDescription>
+        <p>
+          Install it with <code className="font-mono">npm install -g @openai/codex</code> or{' '}
+          <code className="font-mono">brew install --cask codex</code>. Codexed finds it within a minute.
+        </p>
+      </AlertDescription>
+    </Alert>
   )
 }
 
