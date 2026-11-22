@@ -107,7 +107,14 @@ function Description({ text }: { text: string }) {
 
   return (
     <>
-      <p ref={ref} className={cn('mt-1 text-sm text-muted-foreground', !expanded && 'line-clamp-3')}>
+      {/* Quiet until you point at the setting or edit it. */}
+      <p
+        ref={ref}
+        className={cn(
+          'mt-1 text-sm text-muted-foreground/60 transition-colors group-focus-within/head:text-muted-foreground group-hover/head:text-muted-foreground',
+          !expanded && 'line-clamp-3',
+        )}
+      >
         {text}
       </p>
       {(clipped || expanded) && (
