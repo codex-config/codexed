@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronDown, X } from 'lucide-react';
+import Link from 'next/link';
 import { type ComponentProps, type KeyboardEvent, useEffect, useId, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { type Field, fits, isPlainObject, type Setting } from './fields';
@@ -60,7 +61,13 @@ export function SettingRow({
             {value !== undefined && path.length > 1 && (
               <span aria-label="Set in your file" className="size-1.5 shrink-0 rounded-full bg-[#4a7bf5]" />
             )}
-            <code className="font-mono text-sm font-semibold break-all">{setting.key}</code>
+            <Link
+              href={`/settings/${path[0]}${path.length > 1 ? `#${path.join('.')}` : ''}`}
+              title="Open its page"
+              className="font-mono text-sm font-semibold break-all underline-offset-4 hover:underline"
+            >
+              {setting.key}
+            </Link>
             {category && <span className="text-xs text-fd-muted-foreground">in {category}</span>}
             {value !== undefined && (
               <button

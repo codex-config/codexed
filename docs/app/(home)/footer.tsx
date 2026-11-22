@@ -15,7 +15,7 @@ export function Footer() {
     <footer className="border-t bg-fd-card/40">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-6 py-14 lg:grid-cols-[minmax(0,1.2fr)_repeat(4,minmax(0,1fr))]">
         <div className="col-span-2 flex flex-col gap-3 lg:col-span-1">
-          <a href="#codexed" className="flex items-center gap-2.5 text-lg font-semibold">
+          <a href={`${basePath}/#codexed`} className="flex items-center gap-2.5 text-lg font-semibold">
             <Logo className="size-7" />
             Codexed
           </a>
@@ -23,7 +23,7 @@ export function Footer() {
             Edit your config.toml, AGENTS.md, MCP servers, skills, plugins and more. Quick and focused. Written in Go.
           </p>
           <a
-            href="#codexed"
+            href={`${basePath}/#codexed`}
             className="mt-2 flex items-center gap-2 self-start rounded-lg bg-linear-to-b from-[#4a7bf5] to-[#2f5fd6] px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-white/20 transition hover:brightness-110"
           >
             <Download className="size-4" />
@@ -43,12 +43,13 @@ export function Footer() {
         </div>
 
         <Column title="Codex settings">
+          <Item href="/settings">All settings</Item>
           {categories.map((category) => (
-            <Item key={category.id} href={`#settings-${category.id}`}>
+            <Item key={category.id} href={`/settings#${category.id}`}>
               {category.label}
             </Item>
           ))}
-          <Item href="#toml">Check your config.toml</Item>
+          <Item href="/#toml">Check your config.toml</Item>
         </Column>
 
         <Column title="Codexed docs">
@@ -67,12 +68,12 @@ export function Footer() {
         </Column>
 
         <Column title="Resources">
-          <Item href="#codexed">Install Codexed</Item>
+          <Item href="/#codexed">Install Codexed</Item>
           <Item href={githubUrl}>Codexed on GitHub</Item>
           <Item href={`${githubUrl}/releases`}>Releases</Item>
           <Item href={`${githubUrl}/issues`}>Report a problem</Item>
           <Item href="https://developers.openai.com/codex/config-schema.json">config.toml schema</Item>
-          <Item href={`${basePath}/llms.txt`}>llms.txt</Item>
+          <Item href="/llms.txt">llms.txt</Item>
         </Column>
       </div>
     </footer>
@@ -88,13 +89,15 @@ function Column({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-// Only pages use Link. Links to a part of this page stay plain, so that the page sees the new hash.
+// Pages use Link. Links to the homepage with a hash stay plain, so that the homepage sees the
+// new hash, and so do files and other sites.
 function Item({ href, children }: { href: string; children: ReactNode }) {
-  const page = href.startsWith('/') && !/\.\w+$/.test(href);
+  const local = href.startsWith('/');
+  const page = local && !href.startsWith('/#') && !/\.\w+$/.test(href);
   return (
     <li>
       {!page ? (
-        <a href={href} className="text-fd-muted-foreground transition-colors hover:text-fd-foreground">
+        <a href={local ? basePath + href : href} className="text-fd-muted-foreground transition-colors hover:text-fd-foreground">
           {children}
         </a>
       ) : (

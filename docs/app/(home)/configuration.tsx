@@ -11,6 +11,10 @@ import { TOMLEditor } from './toml-editor';
 
 type Mode = 'browse' | 'toml';
 
+// Keeps the file for the tab, so that it is still there after a visit to a setting page.
+const storageKey = 'config.toml';
+const remember = (text: string) => sessionStorage.setItem(storageKey, text);
+
 // One file, edited in two ways: setting by setting in Browse, or as text in TOML.
 // Links to #toml open the TOML view, and links such as #settings-mcp open a group.
 export function Configuration({ categories, known }: { categories: Category[]; known: KeyTree }) {
@@ -19,6 +23,11 @@ export function Configuration({ categories, known }: { categories: Category[]; k
   const [file, setFile] = useState<Settings>({});
   const [text, setText] = useState(() => formatTOML({}));
   const count = Object.keys(file).length;
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem(storageKey);
+    if (saved !== null) edit(saved);
+  }, []);
 
   useEffect(() => {
     const follow = () => {
@@ -50,11 +59,13 @@ export function Configuration({ categories, known }: { categories: Category[]; k
     const next = setAt(file, path, value);
     setFile(next);
     setText(formatTOML(next));
+    remember(formatTOML(next));
   }
 
   // Invalid text stays in the editor, and Browse keeps the last valid file.
   function edit(next: string) {
     setText(next);
+    remember(next);
     const read = readTOML(next);
     if ('file' in read) setFile(read.file);
   }
@@ -62,6 +73,7 @@ export function Configuration({ categories, known }: { categories: Category[]; k
   function reset() {
     setFile({});
     setText(formatTOML({}));
+    remember(formatTOML({}));
   }
 
   return (

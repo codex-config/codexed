@@ -6,6 +6,10 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: appName,
     },
+    links: [
+      { text: 'Settings', url: '/settings', active: 'nested-url' },
+      { text: 'Docs', url: '/docs', active: 'nested-url' },
+    ],
     githubUrl,
   };
 }
