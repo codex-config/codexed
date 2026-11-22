@@ -71,6 +71,7 @@ export function AddFolderDialog({ open, onOpenChange }: { open: boolean; onOpenC
               placeholder={`${health.data?.home ?? ''}/code/my-app`}
               aria-invalid={add.isError}
               autoFocus
+              className="font-mono"
             />
             {add.isError && <p className="text-sm text-destructive">{add.error.message}</p>}
             {pick.isError && <p className="text-sm text-destructive">{pick.error.message}</p>}

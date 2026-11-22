@@ -142,7 +142,7 @@ function Header({ dir, tab, actions }: { dir: string; tab: Tab; actions: (elemen
         <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
         <span className="font-semibold">{section?.label}</span>
       </nav>
-      <span className="ml-auto truncate text-xs text-dim">
+      <span className={cn('ml-auto truncate text-xs text-dim', dir && 'font-mono')}>
         {dir ? shortPath(dir, health.data?.home) : 'Applies to every folder'}
       </span>
       <VersionInfo />

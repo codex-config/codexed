@@ -234,7 +234,8 @@ type DraftInputProps = Omit<ComponentProps<typeof Input>, 'value' | 'onChange'> 
 }
 
 // Saves when the field loses focus or on Enter. Escape restores the saved text.
-function DraftInput({ value, onCommit, suggestions = [], ...props }: DraftInputProps) {
+// Values are code, so they use the mono font, like the keys.
+function DraftInput({ value, onCommit, suggestions = [], className, ...props }: DraftInputProps) {
   const [draft, setDraft] = useState(value)
   const [saved, setSaved] = useState(value)
   const listId = useId()
@@ -252,6 +253,7 @@ function DraftInput({ value, onCommit, suggestions = [], ...props }: DraftInputP
     <>
       <Input
         {...props}
+        className={cn('font-mono', className)}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
         onBlur={() => draft !== value && onCommit(draft)}
@@ -291,12 +293,12 @@ function OptionSelect({
       onValueChange={(next) => next !== null && onSelect(next as string)}
       disabled={disabled}
     >
-      <SelectTrigger size="sm" className="w-full max-w-64" aria-label={label}>
+      <SelectTrigger size="sm" className="w-full max-w-64 font-mono" aria-label={label}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (
-          <SelectItem key={option} value={option}>
+          <SelectItem key={option} value={option} className="font-mono">
             {option}
           </SelectItem>
         ))}
