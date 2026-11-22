@@ -1,0 +1,155 @@
+---
+title: Installation
+description: Install Codexed with one command, or build it from source.
+---
+
+## Install
+
+On macOS and Linux, run this in a terminal:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/codex-config/codexed/main/install.sh | sh
+```
+
+On Windows, run this in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/codex-config/codexed/main/install.ps1 | iex
+```
+
+The script downloads the latest release and checks it against the `SHA256SUMS` file of the release. Then it installs Codexed, starts it, and opens the interface in your browser. Codexed also starts each time you log in, without opening the browser.
+
+| System  | Codexed goes to                                            | It starts at login from                     |
+| ------- | ---------------------------------------------------------- | ------------------------------------------- |
+| macOS   | `~/Applications/Codexed.app`                               | `~/Library/LaunchAgents/app.codexed.plist`  |
+| Linux   | `~/.local/bin/codexed`, with an entry in the app menu      | `~/.config/autostart/codexed.desktop`       |
+| Windows | `%LOCALAPPDATA%\Programs\Codexed`, with a Start menu entry | The `Run` key in `HKEY_CURRENT_USER`        |
+
+The script also lets you type `codexed` in a terminal. On macOS, it adds a `codexed` command to `/usr/local/bin`, or to `~/.local/bin` if you cannot write to `/usr/local/bin`. On Windows, it adds the Codexed folder to your `PATH`. On macOS and Linux, the script tells you if the folder of the command is not in your `PATH` yet.
+
+To update Codexed, run the same command again. The script stops the running copy before it replaces it.
+
+## The Codex CLI
+
+Codexed needs the Codex CLI, because Codex reads and changes the files for it. If you do not have Codex yet, install it with npm or Homebrew:
+
+```bash
+npm install -g @openai/codex
+```
+
+```bash
+brew install --cask codex
+```
+
+Codexed looks for `codex` on your `PATH`. Apps that start at login do not get the `PATH` of your shell, so Codexed also looks in the usual install folders, such as `/opt/homebrew/bin`, `/usr/local/bin` and `~/.local/bin`. On Windows, it also looks in `%APPDATA%\npm`.
+
+Without Codex, Codexed shows a message at the top of the page. It looks for Codex again every minute, so you do not need to restart Codexed after you install or update Codex.
+
+Codexed respects the `CODEX_HOME` environment variable. If you set it, Codexed uses that folder instead of `~/.codex`.
+
+## Start from a terminal
+
+```bash
+codexed
+```
+
+Codexed starts in the background and gives the terminal back, so you can close the terminal. If Codexed is already running, the command opens the interface in your browser.
+
+Codexed writes its log to a file. On macOS, it is `~/Library/Caches/codexed/codexed.log`. On Linux, it is `~/.cache/codexed/codexed.log`. To keep Codexed in the terminal and see its log there, use `-foreground`. On Windows, Codexed is a desktop app, so a terminal never waits for it.
+
+### Options
+
+| Variable               | Effect                                                             |
+| ---------------------- | ------------------------------------------------------------------ |
+| `CODEXED_VERSION`      | Installs this release, for example `v1.2.0`, not the latest one.   |
+| `CODEXED_NO_AUTOSTART` | Set it to `1` if Codexed must not start when you log in.           |
+| `CODEXED_DRY_RUN`      | Set it to `1` to see what the script would do. It changes nothing. |
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/codex-config/codexed/main/install.sh | CODEXED_VERSION=v1.2.0 sh
+```
+
+```powershell
+$env:CODEXED_VERSION = 'v1.2.0'; irm https://raw.githubusercontent.com/codex-config/codexed/main/install.ps1 | iex
+```
+
+With `CODEXED_NO_AUTOSTART`, the script also removes the login item of an earlier install.
+
+### Uninstall
+
+The uninstall removes Codexed, its login item, the `codexed` command, and the settings and cache of Codexed. It does not change your Codex files.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/codex-config/codexed/main/install.sh | sh -s -- --uninstall
+```
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/codex-config/codexed/main/install.ps1))) -Uninstall
+```
+
+The settings of Codexed are the list of folders that you added. The cache holds the config schemas of your Codex versions.
+
+## Build from source
+
+### Requirements
+
+- Go 1.26 or later
+- Node.js 24 or later
+- The Codex CLI
+
+### Build
+
+```bash
+make build
+```
+
+This builds the web interface first. Then it builds the binary into `bin/codexed`. The web interface is embedded in the binary, so you only need that one file.
+
+### Run
+
+```bash
+./bin/codexed
+```
+
+Codexed adds its icon to the tray and opens the interface in your browser. From a terminal, it continues in the background, as described in [Start from a terminal](#start-from-a-terminal).
+
+If Codexed is already running, a second launch does not start a new copy. It opens the browser for the running instance.
+
+#### Flags
+
+| Flag          | Default | Description                                                        |
+| ------------- | ------- | ------------------------------------------------------------------ |
+| `-port`       | `7378`  | Port for the local server.                                         |
+| `-no-open`    | `false` | Do not open the browser when Codexed starts.                       |
+| `-foreground` | `false` | Stay in the terminal. Without it, Codexed runs in the background.  |
+
+## Development
+
+```bash
+make dev
+```
+
+This starts the Go server on port 7378 and the Vite dev server on port 5173. Open http://localhost:5173. Vite sends `/api` requests to the Go server.
+
+The `dev` build tag skips the embedded web files, so you do not need to build the web interface first.
+
+## Release builds
+
+```bash
+make release
+```
+
+This builds the release assets for macOS, Windows and Linux, on both amd64 and arm64, into `bin/release`. Run it on a Mac, because the macOS tray code needs cgo.
+
+- macOS: `codexed-darwin-<arch>.zip`, which holds `Codexed.app`.
+- Windows: `codexed-windows-<arch>.exe`.
+- Linux: `codexed-linux-<arch>`.
+- `SHA256SUMS`, with the SHA-256 of each file.
+
+The Release workflow on GitHub runs `make release` for the version in the `VERSION` file, and it drafts a release with the assets. Publish the draft, and mark it as the latest. The install scripts download from the latest release. A version with a hyphen, such as `0.2.0-beta.1`, makes a pre-release. The scripts only install a pre-release when you ask for its version.
+
+## Platform notes
+
+- **macOS**: the icon shows in the menu bar. Run `make app` to build `bin/Codexed.app`. It has no Dock icon. To start Codexed when you log in, add it in System Settings > General > Login Items.
+- **Windows**: the icon shows in the notification area. The binary is built with `-H=windowsgui`, so no console window opens, and a terminal does not wait for it.
+- **Linux**: you need a tray that supports StatusNotifierItem. On GNOME, install the AppIndicator extension.

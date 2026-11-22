@@ -1,0 +1,32 @@
+---
+title: Features
+description: Turn the feature flags of Codex on or off, globally or for one project.
+---
+
+Feature flags turn parts of Codex on or off, often parts that are still new. Codex keeps them in the `features` table of `config.toml`.
+
+## Which flags Codexed shows
+
+Codexed asks Codex which flags exist, so the list matches your version of Codex. It groups the flags by stage:
+
+| Stage             | What it means                                    |
+| ----------------- | ------------------------------------------------ |
+| Stable            | Ready for everyday use.                          |
+| Beta              | Ready to try. Codex asks for feedback on these.  |
+| Under development | Not ready for broad use yet.                     |
+| Deprecated        | These are going away. Avoid them.                |
+
+Flags that Codex removed are not shown. Use the filter to find a flag by its name or description.
+
+## Turn a flag on or off
+
+Each flag has a switch. When you change it, Codexed writes the flag to the `features` table of the `config.toml` of the scope.
+
+When the file does not set a flag, the switch shows what Codex uses without it:
+
+- In the global view, it says **Default**, and the switch shows the default of Codex.
+- In a project, it says **Inherit**, and the switch shows the value of your global configuration.
+
+To go back to that value, point at the flag and choose **Remove**. Codexed then removes the flag from the file.
+
+The sidebar shows how many flags the file sets next to **Features**.

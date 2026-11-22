@@ -1,0 +1,59 @@
+---
+title: Introduction
+description: What Codexed is and how it works.
+---
+
+Codexed helps you manage the configuration of the Codex CLI. You can edit `config.toml`, `AGENTS.md`, skills, MCP servers and feature flags for all your projects at once, or for one folder. You can also install plugins and add marketplaces.
+
+## How it works
+
+Codexed is a single Go binary.
+
+- When it starts, it adds an icon to the system tray. On macOS, the icon is in the menu bar.
+- The tray menu has three items: **Open**, **GitHub** and **Quit**.
+- **Open** shows the interface in your browser at `http://127.0.0.1:7378`.
+- The server only listens on localhost. Other computers on your network cannot reach it.
+
+Codexed keeps running in the tray until you quit it. You can close the browser tab at any time and open it again from the tray.
+
+Codexed works through the Codex CLI on your computer. It asks Codex which models, skills, plugins and feature flags exist, and Codex makes every change to `config.toml`. So you need the [Codex CLI](/docs/installation#the-codex-cli) too.
+
+## What you can manage
+
+- Global configuration and instructions, in `~/.codex`. You change settings with a form or as TOML.
+- Project configuration and instructions, in any project folder.
+- Skills. You can turn them on or off, edit your own, and write new ones.
+- MCP servers, globally or for one project.
+- Feature flags, globally or for one project.
+- Plugins, which you install from marketplaces.
+- The plugin marketplaces that Codex knows about.
+
+## Find your way around
+
+The sidebar has two parts:
+
+- At the top, your projects.
+- At the bottom, the sections: **Configuration**, **Instructions**, **Skills**, **Plugins**, **Marketplaces**, **MCP Servers** and **Features**.
+
+The **⋯** menu next to the filter adds a project, and it switches between two views of your projects:
+
+- **Tree view** shows your projects inside their folders. Select the arrow next to a folder to open or close it. Only folders that hold projects are in the tree.
+- **List view** shows the most recently used projects first.
+
+To hide the sidebar, choose the codexed logo. The logo stays in the corner. Choose it again to bring the sidebar back. **⌘B** (or **Ctrl+B**) does the same.
+
+With no project selected, each section shows your global configuration. Select a project to see the same section for that project. To go back to the global view, select the project again, or choose **×** next to its name at the top of the page.
+
+The **ⓘ** button at the top right shows the versions of Codexed and Codex.
+
+<Cards>
+  <Card title="Installation" href="/docs/installation" />
+  <Card title="Scopes and files" href="/docs/scopes" />
+  <Card title="Configuration editor" href="/docs/configuration" />
+  <Card title="Instructions" href="/docs/instructions" />
+  <Card title="Skills" href="/docs/skills" />
+  <Card title="Plugins" href="/docs/plugins" />
+  <Card title="Marketplaces" href="/docs/marketplaces" />
+  <Card title="MCP servers" href="/docs/mcp" />
+  <Card title="Features" href="/docs/features" />
+</Cards>

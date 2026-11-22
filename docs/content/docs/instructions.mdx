@@ -1,0 +1,29 @@
+---
+title: Instructions
+description: Edit the AGENTS.md files that Codex reads, globally or for one project.
+---
+
+`AGENTS.md` is a Markdown file with instructions for Codex, such as how to run the tests or which style to follow. Codex reads it before it starts to work.
+
+## Where the files are
+
+| Scope   | File                  | Codex uses it                |
+| ------- | --------------------- | ---------------------------- |
+| Global  | `~/.codex/AGENTS.md`  | In every project             |
+| Project | `<project>/AGENTS.md` | When it works in the project |
+
+The **Instructions** section shows the file of the selected scope. If the file does not exist yet, the editor is empty. When you save, Codexed creates the file.
+
+## Edit and save
+
+Type your instructions in Markdown. Then choose **Save**, or press **⌘S** (or **Ctrl+S**). To undo all your changes since the last save, choose **Discard**.
+
+If the file changed on disk after you started editing, Codexed does not save. For example, Codex may have written to it. Choose **Load theirs** to discard your edits, or **Keep mine** to save over the new version.
+
+## Related settings
+
+In **Configuration**, a few settings change how Codex reads these files:
+
+- `project_doc_max_bytes` limits how much of an `AGENTS.md` Codex reads.
+- `project_doc_fallback_filenames` lists other file names that Codex reads when a folder has no `AGENTS.md`.
+- `developer_instructions` adds instructions in `config.toml` itself.

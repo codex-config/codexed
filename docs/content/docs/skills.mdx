@@ -1,0 +1,41 @@
+---
+title: Skills
+description: Turn skills on or off, edit your own skills, and write new ones.
+---
+
+A skill is a folder with a `SKILL.md` file. Codex reads the name and description of each skill, and it loads the instructions when they are useful. You can also run a skill yourself as `$name`.
+
+## Where skills live
+
+| Scope   | Folder                             |
+| ------- | ---------------------------------- |
+| Global  | `~/.agents/skills/<name>/`         |
+| Project | `<project>/.agents/skills/<name>/` |
+
+Codex also reads the older folders `~/.codex/skills/` and `<project>/.codex/skills/`, and Codexed shows their skills too. New skills always go into `.agents/skills`.
+
+Codexed asks Codex which skills it sees, so the list is the same as in Codex. It has these groups:
+
+- **This project**: the skills of the project. Only in a project.
+- **Your skills**: your global skills.
+- **Built in**: the skills that come with Codex, or that your organization adds.
+
+If a skill does not load, for example because its frontmatter is not valid, Codexed shows the error under the list.
+
+## Turn a skill on or off
+
+Each skill has a switch. Codex saves your choice in your global `config.toml`, so it applies in every project. You can turn off any skill, even a built-in one.
+
+## Edit a skill
+
+Select one of your skills, or a skill of the project, to edit its `SKILL.md`. Saving works the same as for other files. If the file changed on disk, Codexed asks before it saves.
+
+You cannot edit built-in skills. Codexed shows their description and where they are.
+
+## Create a skill
+
+Choose the **+** button next to the filter. Enter a name and a description. In a project, also choose whether the skill belongs to the project or to you. Then choose **Create**.
+
+The name can contain lowercase letters, numbers and hyphens. Codexed creates `SKILL.md` with the frontmatter filled in. Codex reads the description to decide when to use the skill, so say what the skill does and when it helps.
+
+Codexed does not delete skills. To remove one, delete its folder.

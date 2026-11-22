@@ -1,0 +1,40 @@
+---
+title: MCP servers
+description: Add, edit and remove the MCP servers that Codex uses.
+---
+
+MCP servers give Codex tools, such as access to a database or an issue tracker. The **MCP Servers** section lists them and lets you change them.
+
+## Scopes
+
+Codex keeps MCP servers in the `mcp_servers` table of `config.toml`.
+
+| Scope   | Where Codex keeps it           | Where Codex uses it               |
+| ------- | ------------------------------ | --------------------------------- |
+| Global  | `~/.codex/config.toml`         | In every folder                   |
+| Project | `<project>/.codex/config.toml` | In this project, if you trust it  |
+
+In a project, the section shows the servers of the project first, then your global servers. To edit a global server, open it in the global view.
+
+## Add or edit a server
+
+Choose **+**. Enter a name, and choose how the server runs:
+
+- **A command on this computer**: Codex starts the server with a command. You can add arguments and environment variables.
+- **A server at a URL**: Codex connects to the URL. If the server needs a bearer token, enter the name of the environment variable that holds it. Codex reads the token from that variable, so the token is never in `config.toml`.
+
+The name can contain letters, numbers, hyphens and underscores. Then choose **Add**, or **Save** for a server that you changed.
+
+Settings that the form does not show, such as timeouts or the lists of tools, stay as they are. To change them, edit the file in the **TOML** view of **Configuration**.
+
+## Turn a server on or off
+
+Each server has a switch. When you turn a server off, Codexed sets `enabled = false` for it, and Codex does not use it. When you turn it on again, Codexed removes the key.
+
+## Remove a server
+
+Choose **Remove server**. Codexed asks first.
+
+## How Codexed saves
+
+Codexed saves MCP servers the same way as other settings: Codex makes the change with its own TOML editor. So your comments stay, and Codex checks the values. If Codex refuses a change, Codexed shows its message.

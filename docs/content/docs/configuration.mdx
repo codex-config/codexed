@@ -1,0 +1,40 @@
+---
+title: Configuration editor
+description: Change Codex settings with a form, or edit config.toml directly.
+---
+
+The **Configuration** section opens a form for the `config.toml` of the selected scope. Choose **TOML** to edit the file as text instead.
+
+## How Codexed saves
+
+Codexed does not change `config.toml` on its own. Codex makes each change, with its own TOML editor. So your comments, the order of your keys and the rest of your formatting stay as they are, and Codex checks every value before it is saved.
+
+If Codex refuses a value, Codexed does not save, and it shows the message of Codex.
+
+Codex can only change its own global file. So Codexed runs a second copy of Codex with a scratch folder. To change a file, Codexed copies it there, lets Codex make the change, and writes the result back. That way the same editor changes your global file and the files of your projects.
+
+In the **TOML** view, you edit the whole file. Choose **Save**, or press **⌘S** (or **Ctrl+S**). Codex checks the file first, and Codexed does not save a file that Codex cannot load.
+
+## Where the list of settings comes from
+
+Codexed does not have its own list of settings. Each Codex release publishes the schema of `config.toml`, and Codexed shows the settings of the schema for your version of Codex. So the form matches the Codex that reads your files.
+
+Codexed comes with the schema of one Codex version. When your Codex has a different version, Codexed downloads its schema once and keeps it in its cache. Until the download is done, the form uses the schema that Codexed came with. The **ⓘ** button at the top right then says so.
+
+## How the form works
+
+- **In this file** lists the settings that the file already contains. **More settings** lists the others in alphabetical order. When one of the two is empty, the form shows a single list without titles.
+- Use the search field to find a setting by its name or description.
+- Switches and lists save as soon as you change them. Text fields save when you press Enter or leave the field.
+- Settings that are not set take one line. Choose **Edit JSON**, **Add entry** or **Show settings** to open the larger editors.
+- Some settings have no simple form, such as `hooks` or `profiles`. You edit those as JSON in place.
+- For `model` and the reasoning efforts, the form suggests the models of your Codex and the efforts that they support. You can still type any other value.
+- To remove a setting from the file, point at it and choose **Remove**. Codex then uses its default or the value from another scope.
+- The refresh button next to **Visual** and **TOML** reads the file, the schema and the models again, for example after Codex changed them.
+- If the file is not valid TOML, the form shows the error. Fix the file in the **TOML** view first.
+
+Some parts of `config.toml` have their own sections, so the form does not show them: MCP servers, feature flags, skills, plugins and marketplaces. Codexed also hides `projects` and `notice`, which Codex manages itself, and the settings that only keep old files working.
+
+## Experimental settings
+
+Codex marks some settings as experimental. It may change or remove them in any version. Codexed lists them at the end, under **Experimental settings**, and hides them until you choose **Show**. A search also finds them.

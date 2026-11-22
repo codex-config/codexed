@@ -1,0 +1,62 @@
+---
+title: Scopes and files
+description: Which files Codexed reads and writes.
+---
+
+Codex reads its configuration from more than one place. Codexed calls each place a scope.
+
+## Global
+
+Global files apply to all your projects.
+
+| File                    | Purpose                                                              |
+| ----------------------- | -------------------------------------------------------------------- |
+| `~/.codex/config.toml`  | Your global settings.                                                |
+| `~/.codex/AGENTS.md`    | Instructions for Codex in every project.                             |
+| `~/.agents/skills/`     | Your skills. Codex also reads the older folder `~/.codex/skills/`.   |
+
+## Project
+
+Project files apply to one folder.
+
+| File                           | Purpose                                                                    |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `<project>/.codex/config.toml` | Settings for this project.                                                 |
+| `<project>/AGENTS.md`          | Instructions for Codex in this project.                                    |
+| `<project>/.agents/skills/`    | The skills of this project. Codex also reads the older folder `.codex/skills/`. |
+
+Codex reads the `.codex` folder of a project only when you trust the project. In an untrusted project, Codex ignores the project settings, but Codexed still lets you edit them.
+
+New skills always go into `.agents/skills`.
+
+## Precedence
+
+When the same setting is in more than one file, Codex uses this order:
+
+1. Command-line flags, such as `--config`
+2. Project settings
+3. A profile that you select with `--profile`
+4. Global settings
+
+The first one in the list wins. Your global settings win over the system settings, such as `/etc/codex/config.toml` on macOS and Linux, and over the defaults of Codex.
+
+## Project list
+
+Codexed lists three kinds of folders:
+
+- The projects in the `[projects]` table of `~/.codex/config.toml`, where Codex keeps the folders that you trust.
+- The folders of your recent Codex sessions that have Codex files, which are a `.codex` folder or an `AGENTS.md`.
+- The folders that you add yourself.
+
+The folders of the most recent sessions come first. If the same folder is in the list twice, for example through a symbolic link, Codexed shows it once.
+
+To manage a folder that is not in the list, open the **⋯** menu next to the filter and choose **Add project**. Type its path, or choose **Select folder** to pick it in the folder dialog of your system. On Linux, the dialog needs `zenity`, `qarma` or `matedialog`. Folders that you add stay in the list, even without Codex files. To remove one of them, point at it and choose **×**.
+
+Your home folder is not in the list. Its `.codex` folder holds the global files, so you edit them in the global view, with no project selected.
+
+## Saving
+
+- Codexed writes each file atomically. A failed save does not leave a half-written file.
+- If a file changed on disk after you started editing, Codexed does not save. For example, Codex may have written to it. Choose **Load theirs** to discard your edits, or **Keep mine** to save over the new version.
+- While a text editor has unsaved changes, **Discard** and **Save** show at the top right. If you switch to another folder, Codexed asks first.
+- Codexed writes through symbolic links, so a `config.toml` that links to your dotfiles stays a link.
